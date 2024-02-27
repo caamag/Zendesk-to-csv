@@ -22,6 +22,7 @@ function Macros () {
         })
     }, [])
 
+
     const data = macros.map(item => {
         //ajustando restrições de grupos e usuários
         let restrictionUser = ''
@@ -34,13 +35,10 @@ function Macros () {
             idUser = ''
         }
         let restrictionGroups = ''
-        let IdGroup = ''
         if (item.restriction && item.restriction.type === 'Group') {
             restrictionGroups = item.restriction.ids
-            IdGroup = 'Id do/s grupo/s -'
         }else{
             restrictionGroups = 'Não há restrições'
-            IdGroup = ''
         }
 
         const actions = item.actions.map(action => {
@@ -52,7 +50,9 @@ function Macros () {
                 fieldContent = action.field 
             }
 
-            const valueWithoutTags = action.value.replace(/<\/?p>/g, '').replace(/<\/p>/g, '').replace(/<\/?br>/g, '')
+            const valueWithoutTags = action.value.replace(/<\/?p>/g, '')
+            .replace(/<\/p>/g, '')
+            .replace(/<\/?br>/g, '')
 
             return `${fieldContent}: ${valueWithoutTags}`
         }).join('\n')
@@ -63,7 +63,7 @@ function Macros () {
             'Data de criação': dateFormat(item.created_at),
             'Data da última atualização': dateFormat(item.updated_at),
             'Restrição de usuário': `${idUser}${restrictionUser}`,
-            'Restrição por grupo': `${IdGroup}${restrictionGroups}`,
+            'Restrição por grupo': `${restrictionGroups}`,
             'Ações': actions,
         };
     });

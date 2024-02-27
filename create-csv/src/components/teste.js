@@ -1,10 +1,9 @@
-async function getMacros () {
+async function getGroupName () {
 
-    const response = await fetch('/api/v2/macros/active')
+    const response = await fetch('/api/v2/groups')
     const data = await response.json()
-    const macros = data.macros
+    const groups = data.groups
 
-    console.log(macros);
 }
 
-getMacros()
+getGroupName()
