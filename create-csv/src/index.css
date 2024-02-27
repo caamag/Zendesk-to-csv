@@ -1,0 +1,52 @@
+
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+html{
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+}
+
+.container{
+    position: absolute;
+    width: 50%;
+    height: auto;
+    top: 100px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content{
+    width: 100%;
+}
+
+.btn{
+    width: 150px;
+    padding: 10px;
+    border: none;
+    background-color: rgb(10, 80, 141);
+    cursor: pointer;
+    transition: 250ms;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: white;
+    border-radius: 5px;
+    margin: 10px;
+    flex-wrap: wrap;
+}
+
+.btn:hover{
+    width: 170px;
+}
+
+
+.gHHEeh{
+    display: none;
+}
