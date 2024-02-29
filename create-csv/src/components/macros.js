@@ -9,50 +9,110 @@ function Macros () {
     const [name, setName] = useState('')
     const [loading, setLoading] = useState(false)
     const [macros, setMacros] = useState([])
+    const [macrosCount, setMacrosCount] = useState()
+    const [groups, setGroups] = useState([])
 
     //get macros
     useEffect(() => {
-         client.request({
-             url: '/api/v2/macros/active',
-             dataType: 'json',
-             type: 'GET'
-        })
-        .then((response) => {
-            setMacros(response.macros)
+        async function getAllMacros() {
+            let allMacros = [];
+            let page = 1;
+            let totalPages = 5
+
+            while (page <= totalPages) {
+                try {
+                    const response = await client.request({
+                        url: `/api/v2/macros/active?page=${page}`,
+                        dataType: 'json',
+                        type: 'GET'
+                    });
+
+                    const data = response.macros
+                    allMacros = allMacros.concat(data)
+
+                    if (data.meta && data.meta.total_pages) {
+                        totalPages = data.meta.total_pages;
+                    }
+
+                    page++;
+                } catch (error) {
+                    console.error(error)
+                    break;
+                }
+            }
+
+            setMacros(allMacros)
+        }
+
+        getAllMacros();
+    }, [])
+
+    useEffect(() => {
+        client.request({
+            url: '/api/v2/groups',
+            dataType: 'json',
+            type: 'GET'
+        }).then((response) => {
+            setGroups(response.groups)
         })
     }, [])
 
 
     const data = macros.map(item => {
-        //ajustando restrições de grupos e usuários
-        let restrictionUser = ''
-        let idUser = ''
-        if (item.restriction && item.restriction.type === "User") {
-            restrictionUser = item.restriction.id
-            idUser = 'Id do usuário - '
-        }else{
-            restrictionUser = 'Não há restrições de usuário'
-            idUser = ''
-        }
+        //ajustando restrições de grupos
         let restrictionGroups = ''
         if (item.restriction && item.restriction.type === 'Group') {
-            restrictionGroups = item.restriction.ids
+            const groupNames = item.restriction.ids.map((id) => {
+                const group = groups.find(group => group.id === id)
+                return group.name;
+            })
+            restrictionGroups = groupNames.join(', '); 
         }else{
             restrictionGroups = 'Não há restrições'
         }
 
         const actions = item.actions.map(action => {
 
+            //ajustando conteúdo
             let fieldContent = ''
-            if (action.field === "comment_value_html") {
-                fieldContent = 'Comentário/Descrição'
-            }else{
-                fieldContent = action.field 
+            let valueWithoutTags = action.value
+
+            if (valueWithoutTags === "solved") {
+                valueWithoutTags = "Resolvido"
+            }else if (valueWithoutTags === "true") {
+                valueWithoutTags = "Sim"
+            }else if (valueWithoutTags === "current_groups") {
+                valueWithoutTags = "Grupo atual"
+            }else if (valueWithoutTags === "current_user") {
+                valueWithoutTags = "Usuário atual"
             }
 
-            const valueWithoutTags = action.value.replace(/<\/?p>/g, '')
-            .replace(/<\/p>/g, '')
-            .replace(/<\/?br>/g, '')
+            if (action.field === "comment_value_html") {
+                fieldContent = "Comentário/Descrição"
+                //removendo tags HTML no comentários
+                valueWithoutTags = action.value.replace(/<\/?p>/g, '')
+                .replace(/<\/p>/g, '')
+                .replace(/<\/?br>/g, '')
+                .replace(/<\/i>/g, '')
+                .replace(/<\/?i>/g, '')
+                .replace(/<\/b>/g, '')
+                .replace(/<\/?b>/g, '')
+            }else if (action.field === "subject"){
+                fieldContent = "Assunto"
+            }else if (action.field === "brand_id"){
+                fieldContent = "Marca"
+            }else if (action.field === "group_id"){
+                fieldContent = "Grupo"
+            }else if (action.field === "assignee_id"){
+                fieldContent = "Atribuído"
+            }else if (action.field === "priority"){
+                fieldContent = "Prioridade"
+            }else if (action.field.startsWith("custom_fields_")) {
+                const fieldID = action.field.replace("custom_fields_", "")
+                fieldContent = "Campo-" + fieldID; 
+            }else{
+                fieldContent = action.field; 
+            }
 
             return `${fieldContent}: ${valueWithoutTags}`
         }).join('\n')
@@ -62,7 +122,6 @@ function Macros () {
             'Nome da macro': item.title,
             'Data de criação': dateFormat(item.created_at),
             'Data da última atualização': dateFormat(item.updated_at),
-            'Restrição de usuário': `${idUser}${restrictionUser}`,
             'Restrição por grupo': `${restrictionGroups}`,
             'Ações': actions,
         };
@@ -77,15 +136,15 @@ function Macros () {
     }
 
     //criando arquivo
-    function handleSubmit (e) {
-        e.preventDefault()
-        setLoading(true)
-
+    function handleSubmit(e) {
+        e.preventDefault();
+        setLoading(true);
+    
         //configurando exportação
-        const exportType = exportFromJSON.types.csv
-        exportFromJSON({ macros, data, exportType, fileName: name }) 
-
-        setLoading(false)
+        const exportType = exportFromJSON.types.csv;
+        exportFromJSON({ data, exportType, fileName: name });
+    
+        setLoading(false);
     }
 
     return <div className="content">
@@ -94,9 +153,11 @@ function Macros () {
 
             <label>
                 Nome do arquivo:<br />
-                <input type="text" placeholder="Insira o nome do arquivo:"
+                <input type="text" 
+                placeholder="Insira o nome do arquivo:"
                 onChange={(e) => {setName(e.target.value)}}
-                value={name}/>
+                value={name}
+                required/>
             </label><br />
 
             <button className="btn btn-macro">Gerar Planilha</button>
@@ -109,5 +170,3 @@ function Macros () {
 }
 
 export default Macros; 
-
-//filtrar título, ação, grupo e atualizado nos últimos sete dias
