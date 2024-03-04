@@ -1,11 +1,22 @@
-async function getGroups () {
+async function getGroups() {
 
-    const response = await fetch('/api/v2/ticket_fields')
+    const response = await fetch('/api/v2/groups/10007453816333')
     const data = await response.json()
-    const fields = data.ticket_fields
-    
-    console.log(fields);
-    
+
+    console.log(data);
+
 }
 
 getGroups()
+
+async function getMacros() {
+
+    const response = await fetch('/api/v2/macros/10007453816333')
+    const data = await response.json()
+
+    console.log(data);
+
+}
+
+getMacros()
+

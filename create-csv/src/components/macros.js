@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import exportFromJSON from 'export-from-json'
 import ZAFClient from 'zendesk_app_framework_sdk';
-const client = ZAFClient.init(); 
+const client = ZAFClient.init();
 
-function Macros ({backToInitial}) {
+function Macros({ backToInitial }) {
 
     const [name, setName] = useState('')
     const [loading, setLoading] = useState(false)
@@ -17,28 +17,23 @@ function Macros ({backToInitial}) {
         async function getAllMacros() {
             let allMacros = [];
             let page = 1;
-            let totalPages = 5
+            let totalPages = 5;
 
             while (page <= totalPages) {
-                try {
-                    const response = await client.request({
-                        url: `/api/v2/macros/active?page=${page}`,
-                        dataType: 'json',
-                        type: 'GET'
-                    });
+                const response = await client.request({
+                    url: `/api/v2/macros/active?page=${page}`,
+                    dataType: 'json',
+                    type: 'GET'
+                });
 
-                    const data = response.macros
-                    allMacros = allMacros.concat(data)
+                const data = response.macros
+                allMacros = allMacros.concat(data)
 
-                    if (data.meta && data.meta.total_pages) {
-                        totalPages = data.meta.total_pages;
-                    }
-
-                    page++;
-                } catch (error) {
-                    console.error(error)
-                    break;
+                if (data.meta && data.meta.total_pages) {
+                    totalPages = data.meta.total_pages;
                 }
+
+                page++;
             }
 
             setMacros(allMacros)
@@ -62,7 +57,7 @@ function Macros ({backToInitial}) {
             url: '/api/v2/ticket_fields',
             dataType: 'json',
             type: 'GET'
-        }).then((response) =>{
+        }).then((response) => {
             setFields(response.ticket_fields)
         })
     })
@@ -72,12 +67,15 @@ function Macros ({backToInitial}) {
         //ajustando restrições de grupos
         let restrictionGroups = ''
         if (item.restriction && item.restriction.type === 'Group') {
-            const groupNames = item.restriction.ids.map((id) => {
-                const group = groups.find(group => group.id === id)
-                return group.name;
-            })
-            restrictionGroups = groupNames.join(', ')
-        }else{
+
+            const restrictedGroupIds = item.restriction.ids;
+            const restrictedGroupNames = restrictedGroupIds.map(groupId => {
+                const group = groups.find(group => group.id === groupId);
+                return group ? group.name : `Grupo não encontrado`;
+            });
+
+            restrictionGroups = restrictedGroupNames.join(', ')
+        } else {
             restrictionGroups = 'Não há restrições'
         }
 
@@ -89,11 +87,11 @@ function Macros ({backToInitial}) {
 
             if (valueWithoutTags === "solved") {
                 valueWithoutTags = "Resolvido"
-            }else if (valueWithoutTags === "true") {
+            } else if (valueWithoutTags === "true") {
                 valueWithoutTags = "Sim"
-            }else if (valueWithoutTags === "current_groups") {
+            } else if (valueWithoutTags === "current_groups") {
                 valueWithoutTags = "Grupo atual"
-            }else if (valueWithoutTags === "current_user") {
+            } else if (valueWithoutTags === "current_user") {
                 valueWithoutTags = "Usuário atual"
             }
 
@@ -101,44 +99,36 @@ function Macros ({backToInitial}) {
                 fieldContent = "Comentário/Descrição"
                 //removendo tags HTML no comentários
                 valueWithoutTags = action.value.replace(/<\/?p>/g, '')
-                .replace(/<\/p>/g, '')
-                .replace(/<\/?br>/g, '')
-                .replace(/<\/i>/g, '')
-                .replace(/<\/?i>/g, '')
-                .replace(/<\/b>/g, '')
-                .replace(/<\/?b>/g, '')
-                .replace(/<\/span>/g, '')
-                .replace(/<\/?span>/g, '')
-            }else if (action.field === "subject"){
+                    .replace(/<\/p>/g, '')
+                    .replace(/<\/?br>/g, '')
+                    .replace(/<\/i>/g, '')
+                    .replace(/<\/?i>/g, '')
+                    .replace(/<\/b>/g, '')
+                    .replace(/<\/?b>/g, '')
+                    .replace(/<\/span>/g, '')
+                    .replace(/<\/?span>/g, '')
+            } else if (action.field === "subject") {
                 fieldContent = "Assunto"
-            }else if (action.field === "brand_id"){
+            } else if (action.field === "brand_id") {
                 fieldContent = "Marca"
-            }else if (action.field === "group_id"){
+            } else if (action.field === "group_id") {
                 fieldContent = "Grupo"
-            }else if (action.field === "assignee_id"){
+            } else if (action.field === "assignee_id") {
                 fieldContent = "Atribuído"
-            }else if (action.field === "priority"){
+            } else if (action.field === "priority") {
                 fieldContent = "Prioridade"
-            }else if (action.field === 'comment_mode_is_publics'){
+            } else if (action.field === 'comment_mode_is_public') {
                 fieldContent = "Comentário público"
-            }else if (action.field.startsWith("custom_fields_")) {
+            } else if (action.field.startsWith("custom_fields_")) {
                 const fieldIDs = action.field.replace("custom_fields_", "")
-                let fieldName = ''
-                
-                fields.map((field) => {
-                    if (field.id === fieldIDs) {
-                        fieldName = field.title;
-                    }
-                })
-
-                fieldContent = "Campo-" + fieldName; 
-            }else{
-                fieldContent = action.field; 
+                fieldContent = "Campo-" + fieldIDs;
+            } else {
+                fieldContent = action.field;
             }
 
             return `${fieldContent}: ${valueWithoutTags}`
         }).join('\n')
-        
+
         return {
             'Id': item.id,
             'Nome da macro': item.title,
@@ -149,7 +139,7 @@ function Macros ({backToInitial}) {
         };
     });
 
-    function dateFormat (data) {
+    function dateFormat(data) {
         const date = new Date(data)
         const day = String(date.getFullYear()).padStart(2, '0')
         const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -181,11 +171,11 @@ function Macros ({backToInitial}) {
             <label>
                 Nome do arquivo:<br />
                 PS: inserir nome dos campos no lugar dos ids <br />
-                <input type="text" 
-                placeholder="Insira o nome do arquivo:"
-                onChange={(e) => {setName(e.target.value)}}
-                value={name}
-                required/>
+                <input type="text"
+                    placeholder="Insira o nome do arquivo:"
+                    onChange={(e) => { setName(e.target.value) }}
+                    value={name}
+                    required />
             </label><br />
 
             <button className="btn btn-macro">Gerar Planilha</button>
