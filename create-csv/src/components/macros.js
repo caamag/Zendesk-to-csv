@@ -4,13 +4,13 @@ import exportFromJSON from 'export-from-json'
 import ZAFClient from 'zendesk_app_framework_sdk';
 const client = ZAFClient.init(); 
 
-function Macros () {
+function Macros ({backToInitial}) {
 
     const [name, setName] = useState('')
     const [loading, setLoading] = useState(false)
     const [macros, setMacros] = useState([])
-    const [macrosCount, setMacrosCount] = useState()
     const [groups, setGroups] = useState([])
+    const [fields, setFields] = useState([])
 
     //get macros
     useEffect(() => {
@@ -57,6 +57,16 @@ function Macros () {
         })
     }, [])
 
+    useEffect(() => {
+        client.request({
+            url: '/api/v2/ticket_fields',
+            dataType: 'json',
+            type: 'GET'
+        }).then((response) =>{
+            setFields(response.ticket_fields)
+        })
+    })
+
 
     const data = macros.map(item => {
         //ajustando restrições de grupos
@@ -66,7 +76,7 @@ function Macros () {
                 const group = groups.find(group => group.id === id)
                 return group.name;
             })
-            restrictionGroups = groupNames.join(', '); 
+            restrictionGroups = groupNames.join(', ')
         }else{
             restrictionGroups = 'Não há restrições'
         }
@@ -97,6 +107,8 @@ function Macros () {
                 .replace(/<\/?i>/g, '')
                 .replace(/<\/b>/g, '')
                 .replace(/<\/?b>/g, '')
+                .replace(/<\/span>/g, '')
+                .replace(/<\/?span>/g, '')
             }else if (action.field === "subject"){
                 fieldContent = "Assunto"
             }else if (action.field === "brand_id"){
@@ -107,9 +119,19 @@ function Macros () {
                 fieldContent = "Atribuído"
             }else if (action.field === "priority"){
                 fieldContent = "Prioridade"
+            }else if (action.field === 'comment_mode_is_publics'){
+                fieldContent = "Comentário público"
             }else if (action.field.startsWith("custom_fields_")) {
-                const fieldID = action.field.replace("custom_fields_", "")
-                fieldContent = "Campo-" + fieldID; 
+                const fieldIDs = action.field.replace("custom_fields_", "")
+                let fieldName = ''
+                
+                fields.map((field) => {
+                    if (field.id === fieldIDs) {
+                        fieldName = field.title;
+                    }
+                })
+
+                fieldContent = "Campo-" + fieldName; 
             }else{
                 fieldContent = action.field; 
             }
@@ -139,11 +161,11 @@ function Macros () {
     function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
-    
+
         //configurando exportação
         const exportType = exportFromJSON.types.csv;
         exportFromJSON({ data, exportType, fileName: name });
-    
+
         setLoading(false);
     }
 
@@ -151,8 +173,14 @@ function Macros () {
 
         <form className="form" onSubmit={handleSubmit}>
 
+            <button className="back" onClick={(e) => {
+                e.preventDefault()
+                backToInitial()
+            }}>— voltar</button>
+
             <label>
                 Nome do arquivo:<br />
+                PS: inserir nome dos campos no lugar dos ids <br />
                 <input type="text" 
                 placeholder="Insira o nome do arquivo:"
                 onChange={(e) => {setName(e.target.value)}}

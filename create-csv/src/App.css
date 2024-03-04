@@ -35,3 +35,17 @@
     border-radius: 5px;
     background-color: rgb(55, 197, 121);
 }
+
+.back{
+    position: absolute;
+    top: -40px;
+    left: -15px;
+    font-size: 1.4rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.back:hover{
+    color: blue;
+}
