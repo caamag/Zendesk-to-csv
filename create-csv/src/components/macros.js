@@ -15,6 +15,9 @@ function Macros({ backToInitial }) {
     //get macros
     useEffect(() => {
         async function getAllMacros() {
+
+            setLoading(true)
+
             let allMacros = [];
             let page = 1;
             let totalPages = 5;
@@ -37,6 +40,7 @@ function Macros({ backToInitial }) {
             }
 
             setMacros(allMacros)
+            setLoading(false)
         }
 
         getAllMacros();
@@ -93,6 +97,10 @@ function Macros({ backToInitial }) {
                 valueWithoutTags = "Grupo atual"
             } else if (valueWithoutTags === "current_user") {
                 valueWithoutTags = "Usuário atual"
+            } else if (valueWithoutTags === "low") {
+                valueWithoutTags = "Baixa"
+            } else {
+                valueWithoutTags = action.value;
             }
 
             if (action.field === "comment_value_html") {
@@ -113,6 +121,8 @@ function Macros({ backToInitial }) {
                 fieldContent = "Marca"
             } else if (action.field === "group_id") {
                 fieldContent = "Grupo"
+                valueWithoutTags = `Id do grupo(${action.value})`;
+
             } else if (action.field === "assignee_id") {
                 fieldContent = "Atribuído"
             } else if (action.field === "priority") {
@@ -120,8 +130,13 @@ function Macros({ backToInitial }) {
             } else if (action.field === 'comment_mode_is_public') {
                 fieldContent = "Comentário público"
             } else if (action.field.startsWith("custom_fields_")) {
-                const fieldIDs = action.field.replace("custom_fields_", "")
-                fieldContent = "Campo-" + fieldIDs;
+                const fieldsID = action.field.replace("custom_fields_", "")
+                const customField = fields.find(field => field.id === parseInt(fieldsID))
+                if (customField) {
+                    fieldContent = customField.title
+                } else {
+                    fieldContent = fieldsID;
+                }
             } else {
                 fieldContent = action.field;
             }
@@ -150,13 +165,12 @@ function Macros({ backToInitial }) {
     //criando arquivo
     function handleSubmit(e) {
         e.preventDefault();
-        setLoading(true);
 
         //configurando exportação
         const exportType = exportFromJSON.types.csv;
         exportFromJSON({ data, exportType, fileName: name });
 
-        setLoading(false);
+        window.location.reload()
     }
 
     return <div className="content">
@@ -178,7 +192,10 @@ function Macros({ backToInitial }) {
                     required />
             </label><br />
 
-            <button className="btn btn-macro">Gerar Planilha</button>
+            {!loading && <>
+                <button className="btn btn-macro">Gerar Planilha</button>
+            </>}
+
             {loading && <p className="loading">carregando...</p>}
 
         </form>
