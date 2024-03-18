@@ -4,7 +4,7 @@ import exportFromJSON from 'export-from-json'
 import ZAFClient from 'zendesk_app_framework_sdk';
 const client = ZAFClient.init();
 
-function Macros({ backToInitial }) {
+function Macros({ backToInitial, dateFormat }) {
 
     const [name, setName] = useState('')
     const [loading, setLoading] = useState(false)
@@ -105,16 +105,7 @@ function Macros({ backToInitial }) {
 
             if (action.field === "comment_value_html") {
                 fieldContent = "Comentário/Descrição"
-                //removendo tags HTML no comentários
-                valueWithoutTags = action.value.replace(/<\/?p>/g, '')
-                    .replace(/<\/p>/g, '')
-                    .replace(/<\/?br>/g, '')
-                    .replace(/<\/i>/g, '')
-                    .replace(/<\/?i>/g, '')
-                    .replace(/<\/b>/g, '')
-                    .replace(/<\/?b>/g, '')
-                    .replace(/<\/span>/g, '')
-                    .replace(/<\/?span>/g, '')
+                valueWithoutTags = action.value.replace(/<[^>]+>/g, '')
             } else if (action.field === "subject") {
                 fieldContent = "Assunto"
             } else if (action.field === "brand_id") {
@@ -153,14 +144,6 @@ function Macros({ backToInitial }) {
             'Ações': actions,
         };
     });
-
-    function dateFormat(data) {
-        const date = new Date(data)
-        const day = String(date.getFullYear()).padStart(2, '0')
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const year = String(date.getFullYear())
-        return `${day}/${month}/${year}`
-    }
 
     //criando arquivo
     function handleSubmit(e) {
