@@ -1,17 +1,17 @@
-
-*{
+* {
     padding: 0px;
     margin: 0px;
 }
 
-html{
+html {
     font-size: 62.5%;
     scroll-behavior: smooth;
 }
 
-.container{
+.container {
     position: absolute;
-    width: 90%;
+    width: 700px;
+    flex-wrap: wrap;
     height: auto;
     top: 100px;
     left: 0px;
@@ -23,11 +23,11 @@ html{
     align-items: center;
 }
 
-.content{
+.content {
     width: 100%;
 }
 
-.btn{
+.btn {
     width: 150px;
     padding: 10px;
     border: none;
@@ -42,11 +42,11 @@ html{
     flex-wrap: wrap;
 }
 
-.btn:hover{
+.btn:hover {
     width: 170px;
 }
 
 
-.gHHEeh{
+.gHHEeh {
     display: none;
 }
