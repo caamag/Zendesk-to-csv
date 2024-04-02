@@ -8,43 +8,130 @@ function Organizations({ backToInitial }) {
 
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
-
+    const [organization, setOrganization] = useState([]);
+    const [members, setMembers] = useState([]);
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        async function getUsers() {
+        async function fethData() {
             setLoading(true);
-            let allUsers = [];
+
+            const organizations = await getOrganizations();
+            setOrganization(organizations);
+            const members = await getMembers(organizations);
+            setMembers(members);
+            const users = await getUsers();
+            setUsers(users);
+
+            setLoading(false);
+        }
+        fethData();
+    }, []);
+
+    async function getOrganizations() {
+        let allOrgs = [];
+        let currentPage = 1;
+        let totalOrgs = 0;
+
+        do {
+            const response = await client.request({
+                url: '/api/v2/organizations',
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    page: currentPage,
+                    per_page: 100,
+                }
+            });
+
+            allOrgs = [...allOrgs, ...response.organizations];
+            totalOrgs = response.count;
+            currentPage++;
+        } while (allOrgs.length < totalOrgs);
+        return allOrgs;
+    }
+
+    async function getMembers(organization) {
+        let allMembers = [];
+
+        for (const org of organization) {
             let currentPage = 1;
-            let totalUsers = 0;
+            let totalMembers = 0;
 
             do {
                 const response = await client.request({
-                    url: '/api/v2/users',
+                    url: `/api/v2/organizations/${org.id}/organization_memberships.json`,
                     dataType: 'json',
                     type: 'GET',
                     data: {
                         page: currentPage,
-                        per_page: 100
+                        per_page: 100,
                     }
                 });
-
-                allUsers = [...allUsers, ...response.users]
-                totalUsers = response.count;
+                totalMembers = response.count;
+                allMembers = [...allMembers, ...response.organization_memberships];
                 currentPage++;
-            } while (allUsers.length < totalUsers);
-
-            setUsers(allUsers);
-            setLoading(false);
+            } while (allMembers.length < totalMembers)
         }
-        getUsers()
-    }, []);
+        return allMembers;
+    }
 
-    console.log(users);
+    async function getUsers() {
+        let allUsers = [];
+        let currentPage = 1;
+        let totalUsers = 0;
+
+        do {
+            const response = await client.request({
+                url: '/api/v2/users',
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    page: currentPage,
+                    per_page: 100,
+                }
+            })
+            allUsers = [...allUsers, ...response.users];
+            totalUsers = response.count;
+            currentPage++;
+        } while (allUsers.length < totalUsers)
+        return allUsers;
+    }
+
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = organization.map(org => {
+
+            const orgMembers = members.filter(member => member.organization_id === org.id);
+            const userId = orgMembers.map(member => { return member.user_id });
+
+            const orgUsers = userId.map(id => {
+                return users.find(user => user.id === id);
+            });
+
+            const nameAndEmail = orgUsers.map(user => `${user.name} - ${user.email}`).join('\n')
+            const userContent = nameAndEmail ? nameAndEmail : 'Nenhum usuário presenta na organização'
+
+            return {
+                "Organização": org.name,
+                "Quantidade de membros": orgMembers.length,
+                "Dados dos usuários": userContent
+            }
+        })
+
+        //csv settings
+        const fileName = name;
+        const exportType = exportFromJSON.types.csv;
+        exportFromJSON({ data, fileName, exportType });
+    };
+
+
 
     return <div className="content">
 
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
 
             <button className="back" onClick={(e) => {
                 e.preventDefault()

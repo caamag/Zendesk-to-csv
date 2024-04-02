@@ -2,16 +2,18 @@
 async function getArticles() {
     const res = await fetch('/api/v2/users')
     const data = await res.json()
-    console.log(data);
+    console.log(data.users);
 }
 
 getArticles()
 
 
 async function getOrganization() {
-    const res = await fetch('/api/v2/organization_memberships')
+    const res = await fetch('/api/v2/organizations/6018763383437/organization_memberships.json')
     const data = await res.json()
     console.log(data);
 }
 
 getOrganization();
+
+//6018763383437
