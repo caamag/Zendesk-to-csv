@@ -167,7 +167,6 @@ function Macros({ backToInitial, dateFormat }) {
 
             <label>
                 Nome do arquivo:<br />
-                PS: inserir nome dos campos no lugar dos ids <br />
                 <input type="text"
                     placeholder="Insira o nome do arquivo:"
                     onChange={(e) => { setName(e.target.value) }}

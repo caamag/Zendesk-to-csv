@@ -18,10 +18,15 @@ function Organizations({ backToInitial }) {
 
             const organizations = await getOrganizations();
             setOrganization(organizations);
+            console.log(organization);
+
             const members = await getMembers(organizations);
             setMembers(members);
+            console.log(members);
+
             const users = await getUsers();
             setUsers(users);
+            console.log(users);
 
             setLoading(false);
         }
@@ -107,16 +112,23 @@ function Organizations({ backToInitial }) {
             const orgMembers = members.filter(member => member.organization_id === org.id);
             const userId = orgMembers.map(member => { return member.user_id });
 
+            const membersCount = orgMembers.length > 0 ? orgMembers.length : 'Nenhum usuário nesta organização';
+
             const orgUsers = userId.map(id => {
                 return users.find(user => user.id === id);
             });
 
-            const nameAndEmail = orgUsers.map(user => `${user.name} - ${user.email}`).join('\n')
-            const userContent = nameAndEmail ? nameAndEmail : 'Nenhum usuário presenta na organização'
+            const nameAndEmail = orgUsers.map(user => `
+            ${user.name};
+            ${user.email};
+            ${user.user_fields[6] ? user.user_fields[6] : 'Campo vazio'};`)
+            .join('\n');
+
+            const userContent = nameAndEmail ? nameAndEmail : 'Nenhum usuário presente na organização'
 
             return {
                 "Organização": org.name,
-                "Quantidade de membros": orgMembers.length,
+                "Quantidade de membros": membersCount,
                 "Dados dos usuários": userContent
             }
         })
@@ -151,7 +163,6 @@ function Organizations({ backToInitial }) {
             {loading && <p className="loading">carregando...</p>}
 
         </form>
-
     </div>
 
 };
