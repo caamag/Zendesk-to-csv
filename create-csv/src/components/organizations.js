@@ -18,15 +18,12 @@ function Organizations({ backToInitial }) {
 
             const organizations = await getOrganizations();
             setOrganization(organizations);
-            console.log(organization);
 
             const members = await getMembers(organizations);
             setMembers(members);
-            console.log(members);
 
             const users = await getUsers();
             setUsers(users);
-            console.log(users);
 
             setLoading(false);
         }
