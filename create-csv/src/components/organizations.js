@@ -134,6 +134,7 @@ function Organizations({ backToInitial }) {
         const fileName = name;
         const exportType = exportFromJSON.types.csv;
         exportFromJSON({ data, fileName, exportType });
+        window.location.reload();
     };
 
 
