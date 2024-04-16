@@ -7,6 +7,7 @@ import Forms from './components/forms';
 import Articles from './components/articles';
 import Groups from './components/groups';
 import Organizations from './components/organizations';
+import Agents from './components/agents';
 
 function App() {
 
@@ -16,7 +17,8 @@ function App() {
     { name: 'form' },
     { name: 'articles' },
     { name: 'groups' },
-    { name: 'organizations' }
+    { name: 'organizations' },
+    { name: 'agents' }
   ]
 
   const [stage, setStages] = useState(stages[0].name)
@@ -44,6 +46,7 @@ function App() {
           <button className='btn' onClick={() => { setStages(stages[3].name) }}>Artigos</button>
           <button className='btn' onClick={() => { setStages(stages[4].name) }}>Grupos</button>
           <button className='btn' onClick={() => { setStages(stages[5].name) }}>Organizações</button>
+          <button className='btn' onClick={() => { setStages(stages[6].name) }}>Agentes</button>
 
         </>}
       </section>
@@ -55,6 +58,7 @@ function App() {
         {stage === 'articles' && <Articles backToInitial={backToInitial} dateFormat={dateFormat} />}
         {stage === 'groups' && <Groups backToInitial={backToInitial} />}
         {stage === 'organizations' && <Organizations backToInitial={backToInitial} />}
+        {stage === 'agents' && <Agents backToInitial={backToInitial} />}
 
       </section>
 
