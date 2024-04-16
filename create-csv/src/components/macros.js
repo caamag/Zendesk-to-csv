@@ -106,6 +106,9 @@ function Macros({ backToInitial, dateFormat }) {
             if (action.field === "comment_value_html") {
                 fieldContent = "Comentário/Descrição"
                 valueWithoutTags = action.value.replace(/<[^>]+>/g, '')
+            } else if (action.field === "comment_value") {
+                fieldContent = "Comentário"
+                valueWithoutTags = action.value.replace(/<[^>]+>/g, '')
             } else if (action.field === "subject") {
                 fieldContent = "Assunto"
             } else if (action.field === "brand_id") {
