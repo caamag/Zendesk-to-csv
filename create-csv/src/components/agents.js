@@ -100,21 +100,37 @@ function Agents({ backToInitial }) {
     }
 
     const data = users.map(user => {
-        const tags = user.tags.map(tag => {
-            const userTag = tag ? tag : 'Usuário não possui nenhuma tag'
-            return userTag;
-        })
 
-        const userGroups = members.filter(member => member.user_id === user.id)
+        const memberships = members.filter(member => member.user_id === user.id);
+        const groupsIDs = memberships.map(member => member.group_id);
+
+        const groupName = groupsIDs.map(groupID => {
+            const group = groups.find(groupFiter => groupFiter.id === groupID);
+            return group.name;
+        }).join(', ');
+
+        const roles = ['Agente Light', 'Agente Líder', 'Colaborador', 'Admin', 'Função personalizada'];
+        let role = '';
+        if (user.custom_role_id === 360008815632) {
+            role = roles[0];
+        }else if (user.custom_role_id === 1030151) {
+            role = roles[1];
+        }else if (user.role_type === 3) {
+            role = roles[2];
+        }else if (user.role_type === 4){
+            role = roles[3];
+        }else{
+            role = roles[4];
+        }
 
         return {
             'ID': user.id,
             'Nome': user.name,
-            'Função do agente': user.role,
-            'Tags': tags,
-            'Grupos': userGroups
+            'Email': user.email,
+            'Função do agente': role,
+            'Grupos': groupName
         }
-    })
+    });
 
     function handleSubmit(e) {
         e.preventDefault();
