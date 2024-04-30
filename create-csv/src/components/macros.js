@@ -26,7 +26,8 @@ function Macros({ backToInitial, dateFormat }) {
                 const response = await client.request({
                     url: `/api/v2/macros/active?page=${page}`,
                     dataType: 'json',
-                    type: 'GET'
+                    type: 'GET',
+                    cors: true
                 });
 
                 const data = response.macros
@@ -50,7 +51,8 @@ function Macros({ backToInitial, dateFormat }) {
         client.request({
             url: '/api/v2/groups',
             dataType: 'json',
-            type: 'GET'
+            type: 'GET',
+            cors: true
         }).then((response) => {
             setGroups(response.groups)
         })
@@ -60,7 +62,8 @@ function Macros({ backToInitial, dateFormat }) {
         client.request({
             url: '/api/v2/ticket_fields',
             dataType: 'json',
-            type: 'GET'
+            type: 'GET',
+            cors: true,
         }).then((response) => {
             setFields(response.ticket_fields)
         })

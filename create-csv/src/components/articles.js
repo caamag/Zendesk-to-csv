@@ -18,7 +18,8 @@ function Articles({ backToInitial, dateFormat }) {
         client.request({
             url: '/api/v2/help_center/articles',
             dataType: 'json',
-            type: 'GET'
+            type: 'GET',
+            cors: true, 
         }).then(response => {
             setArticles(response.articles);
             setLoading(false)
@@ -31,7 +32,8 @@ function Articles({ backToInitial, dateFormat }) {
         client.request({
             url: "/api/v2/groups",
             dataType: "json",
-            type: "GET"
+            type: "GET",
+            cors: true, 
         }).then(response => {
             setGroups(response.groups)
             setLoading(false)

@@ -40,6 +40,7 @@ function Groups({ backToInitial }) {
                 url: '/api/v2/users',
                 dataType: 'json',
                 type: 'GET',
+                coors: true, 
                 data: {
                     page: currentPage,
                     per_page: 100,
@@ -65,6 +66,7 @@ function Groups({ backToInitial }) {
                 url: '/api/v2/groups',
                 dataType: 'json',
                 type: 'GET',
+                cors: true,
                 data: {
                     page: currentPage,
                     per_page: 100,
@@ -92,6 +94,7 @@ function Groups({ backToInitial }) {
                     url: `/api/v2/groups/${group.id}/memberships`,
                     dataType: 'json',
                     type: 'GET',
+                    cors: true,
                     data: {
                         page: currentPage,
                         per_page: 100,

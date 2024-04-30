@@ -40,6 +40,7 @@ function Agents({ backToInitial }) {
                 url: '/api/v2/users?role[]=admin&role[]=agent',
                 dataType: 'json',
                 type: 'GET',
+                cors: true,
                 data: {
                     page: currentPage,
                     per_page: 100,
@@ -62,6 +63,7 @@ function Agents({ backToInitial }) {
                 url: '/api/v2/groups',
                 dataType: 'json',
                 type: 'GET',
+                cors: true,
                 data: {
                     page: currentPage,
                     per_page: 100,
@@ -86,6 +88,7 @@ function Agents({ backToInitial }) {
                     url: `/api/v2/groups/${group.id}/memberships`,
                     dataType: 'json',
                     type: 'GET',
+                    cors: true,
                     data: {
                         page: currentPage,
                         per_page: 100,

@@ -25,6 +25,10 @@ function Organizations({ backToInitial }) {
             const users = await getUsers();
             setUsers(users);
 
+            const fileNameFibra = 'Org Banco Fibra';
+            const handle = await handleSubmit(fileNameFibra);
+            handle();
+
             setLoading(false);
         }
         fethData();
@@ -40,6 +44,7 @@ function Organizations({ backToInitial }) {
                 url: '/api/v2/organizations',
                 dataType: 'json',
                 type: 'GET',
+                cors: true,
                 data: {
                     page: currentPage,
                     per_page: 100,
@@ -65,6 +70,7 @@ function Organizations({ backToInitial }) {
                     url: `/api/v2/organizations/${org.id}/organization_memberships.json`,
                     dataType: 'json',
                     type: 'GET',
+                    cors: true,
                     data: {
                         page: currentPage,
                         per_page: 100,
@@ -88,6 +94,7 @@ function Organizations({ backToInitial }) {
                 url: '/api/v2/users',
                 dataType: 'json',
                 type: 'GET',
+                cors: true, 
                 data: {
                     page: currentPage,
                     per_page: 100,
@@ -100,9 +107,7 @@ function Organizations({ backToInitial }) {
         return allUsers;
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
-
+    function handleSubmit(name) {
         const data = organization.map(org => {
 
             const orgMembers = members.filter(member => member.organization_id === org.id);
@@ -127,7 +132,7 @@ function Organizations({ backToInitial }) {
                 "Quantidade de membros": membersCount,
                 "Dados dos usuários": userContent
             }
-        })
+        });
 
         //csv settings
         const fileName = name;

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import exportFromJSON from 'export-from-json'
 import ZAFClient from 'zendesk_app_framework_sdk';
 const client = ZAFClient.init(); 
@@ -8,7 +8,24 @@ function Forms ({backToInitial}) {
 
     const [name, setName] = useState('')
     const [loading, setLoading] = useState(false)
-    const [formId, setFormId] = useState()
+    const [formId, setFormId] = useState();
+
+    useEffect(() => {
+        setLoading(true);
+        getForm(formId);
+        setLoading(false)
+    }, []);
+
+    async function getForm (formId) {
+        client.request({
+            url: `/api/v2/ticket_forms/${formId}`,
+            dataType: 'json',
+            type: 'GET',
+            cors: true,
+        }).then(response => {
+            console.log(response.ticket_form);
+        })
+    };
 
 
     return <div className="content">
