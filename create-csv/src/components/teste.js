@@ -1,10 +1,8 @@
 
 async function getForm () {
-    const res = await fetch('/api/v2/ticket_forms/1900000679725');
+    const res = await fetch('/api/v2/ticket_forms/5396236093069');
     const data = await res.json();
-    console.log(data.ticket_form);
+    console.log(data);
 }
 getForm()
-
-// getArticles()
 

@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 //components
 import Macros from './components/macros';
-import Forms from './components/forms';
+import Forms from './components/form';
 import Articles from './components/articles';
 import Groups from './components/groups';
 import Organizations from './components/organizations';
@@ -17,7 +17,8 @@ function App() {
     { name: 'articles' },
     { name: 'groups' },
     { name: 'organizations' },
-    { name: 'agents' }
+    { name: 'agents'},
+    {name: 'forms'}
   ]
 
   const [stage, setStages] = useState(stages[0].name)
@@ -44,17 +45,18 @@ function App() {
           <button className='btn' onClick={() => { setStages(stages[3].name) }}>Grupos</button>
           <button className='btn' onClick={() => { setStages(stages[4].name) }}>Organizações</button>
           <button className='btn' onClick={() => { setStages(stages[5].name) }}>Agentes</button>
+          <button className='btn' onClick={() => { setStages(stages[6].name) }}>Formulários</button>
         </>}
       </section>
 
       <section className='container'>
 
         {stage === 'macro' && <Macros backToInitial={backToInitial} dateFormat={dateFormat} />}
-        {stage === 'form' && <Forms backToInitial={backToInitial} />}
         {stage === 'articles' && <Articles backToInitial={backToInitial} dateFormat={dateFormat} />}
         {stage === 'groups' && <Groups backToInitial={backToInitial} />}
         {stage === 'organizations' && <Organizations backToInitial={backToInitial} />}
         {stage === 'agents' && <Agents backToInitial={backToInitial} />}
+        {stage === 'forms' && <Forms backToInitial={backToInitial}/>}
 
       </section>
 
