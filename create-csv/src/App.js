@@ -14,7 +14,6 @@ function App() {
   const stages = [
     { name: 'initial' },
     { name: 'macro' },
-    { name: 'form' },
     { name: 'articles' },
     { name: 'groups' },
     { name: 'organizations' },
@@ -40,14 +39,11 @@ function App() {
 
       <section className='container'>
         {stage === 'initial' && <>
-
           <button className='btn' onClick={() => { setStages(stages[1].name) }}>Macros</button>
-          <button className='btn' onClick={() => { setStages(stages[2].name) }}>Formulário</button>
-          <button className='btn' onClick={() => { setStages(stages[3].name) }}>Artigos</button>
-          <button className='btn' onClick={() => { setStages(stages[4].name) }}>Grupos</button>
-          <button className='btn' onClick={() => { setStages(stages[5].name) }}>Organizações</button>
-          <button className='btn' onClick={() => { setStages(stages[6].name) }}>Agentes</button>
-
+          <button className='btn' onClick={() => { setStages(stages[2].name) }}>Artigos</button>
+          <button className='btn' onClick={() => { setStages(stages[3].name) }}>Grupos</button>
+          <button className='btn' onClick={() => { setStages(stages[4].name) }}>Organizações</button>
+          <button className='btn' onClick={() => { setStages(stages[5].name) }}>Agentes</button>
         </>}
       </section>
 
