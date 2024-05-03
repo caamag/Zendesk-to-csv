@@ -9,7 +9,7 @@ Transformação dos dados obtidos em uma planilha utilizando a biblioteca export
 Personalização da organização dos dados conforme necessidades específicas do usuário.<br>
 
 <h2>Contexto</h2><br>
-O Projeto XYZ surgiu da necessidade de simplificar e acelerar processos manuais de extração de dados para usuários do Zendesk. Um exemplo prático dessa necessidade foi a demanda de mapear 398 macros criadas em uma instância Zendesk em uma planilha. Antes do desenvolvimento deste projeto, esse trabalho seria moroso e consumiria vários dias de trabalho. No entanto, com o uso de tecnologias como React e a API do Zendesk, tornou-se possível automatizar esse processo de forma rápida e eficiente.<br>
+O Projeto Zendesk to CSV surgiu da necessidade de simplificar e acelerar processos manuais de extração de dados para usuários do Zendesk. Um exemplo prático dessa necessidade foi a demanda de mapear 398 macros criadas em uma instância Zendesk em uma planilha. Antes do desenvolvimento deste projeto, esse trabalho seria moroso e consumiria vários dias de trabalho. No entanto, com o uso de tecnologias como React e a API do Zendesk, tornou-se possível automatizar esse processo de forma rápida e eficiente.<br>
 
 <h2>Tecnologias Utilizadas</h2><br>
 React: Utilizado para o desenvolvimento da interface do usuário.<br>
