@@ -1,4 +1,4 @@
-import './App.css';
+import 'App.css'
 import { useState } from 'react'
 
 //components
@@ -17,8 +17,8 @@ function App() {
     { name: 'articles' },
     { name: 'groups' },
     { name: 'organizations' },
-    { name: 'agents'},
-    {name: 'forms'}
+    { name: 'agents' },
+    { name: 'forms' }
   ]
 
   const [stage, setStages] = useState(stages[0].name)
@@ -56,7 +56,7 @@ function App() {
         {stage === 'groups' && <Groups backToInitial={backToInitial} />}
         {stage === 'organizations' && <Organizations backToInitial={backToInitial} />}
         {stage === 'agents' && <Agents backToInitial={backToInitial} />}
-        {stage === 'forms' && <Forms backToInitial={backToInitial}/>}
+        {stage === 'forms' && <Forms backToInitial={backToInitial} />}
 
       </section>
 
